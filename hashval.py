@@ -22,18 +22,19 @@ def compare(h1, h2):
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description="test")
+  parser.add_argument("-c", "--compare", required=True, action="store_true")
   parser.add_argument("-t", "--text", required=False)
   parser.add_argument("-f", "--filename", required = False)
+  parser.add_argument("-f2", "--filename2", required=False)
   args = parser.parse_args()
 
-  text = args.text
-  file = args.filename
-
-  r1 = extract2string(text)
-  r2 = extract2file(file)
-
-  time.sleep(2)
-  print(f"[!] First hash: {r1}")
-  print(f"[!] Second hash: {r2}")
-
-  compare(r1, r2)
+  if args.compare == True:
+      try:
+          if args.text is None:
+              r1 = extract2file("test.txt")
+              r2 = extract2file("test2.txt")
+          else:
+              extract2string(args.text)
+      except ValueError:
+  else:
+      pass
