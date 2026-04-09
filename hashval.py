@@ -28,13 +28,13 @@ if __name__ == "__main__":
   parser.add_argument("-f2", "--filename2", required=False)
   args = parser.parse_args()
 
-  if args.compare == True:
+  if args.text is None:
       try:
-          if args.text is None:
-              r1 = extract2file("test.txt")
-              r2 = extract2file("test2.txt")
-          else:
-              extract2string(args.text)
-      except ValueError:
+          r1 = extract2file(args.filename)
+          r2 = extract2file(args.filename2)
+
+          end = compare(r1, r2)
+      except ValueError as e:
+          print(f"Error: {e}")
   else:
       pass
