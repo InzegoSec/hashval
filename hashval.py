@@ -4,6 +4,7 @@
 import argparse
 import hashlib
 import time
+import sys
 from pwn import *
 
 panel = r'''
@@ -30,11 +31,12 @@ def e_file(filename, algorithm): # lectura en bytes del archivo
         digest = hashlib.file_digest(file, f'{algorithm}')
         return digest.hexdigest() # retorna hash en hexadecimal
 
+# Validacion de longitud de hash, para que la comparacion se haga con hashes del mismo algoritmo
 def leng_val(h1, h2):
-    return len(h1) == len(h2)
+    return len(h1) == len(h2) # Retorna True o False si el numero de caracteres son iguales
 
 def compare(h1, h2):
-    return h1 == h2
+    return h1 == h2 # Returna True o False si los hashes son iguales
 
 if __name__ == "__main__":
     print(panel)
@@ -82,20 +84,31 @@ if __name__ == "__main__":
     if args.compare == True:
         log.info("Compare mode selected...")
         time.sleep(2)
-
-        print()
-        u_in = input("[*] Input the hash: ")
-        u_in2 = input("[*] Input the second hash: ")
         print()
 
-        r = leng_val(u_in, u_in2)
-        if r == True:
-            log.info("Algoritmos iguales")
-        else:
-            log.failure("Error")
+        log.info("Now type your hashes to compare")
+        usr_input = input("[*] First hash: ")
+        usr_input_2 = input("[*] Second hash: ")
+        p = log.progress("Working in")
+        p.status("Verifying algorithms...")
+        time.sleep(2)
 
-        result = compare(u_in, u_in2)
-        if result == True:
-            log.success("Hashes iguales")
+        if leng_val(usr_input, usr_input_2) == True:
+            log.success("Verified")
+            p.status("Comparing...")
+            time.sleep(2)
+
+            try:
+                r = compare(usr_input, usr_input_2)
+                if r == True:
+                    log.success("Equal hashes.")
+                else:
+                    log.failure("No equal hashes.")
+                    sys.exit(0)
+            except ValueError as e:
+                log.failure(f"{e}")
         else:
-            log.failure("Hashes no iguales")
+            log.failure("Error in verificate, exiting...")
+            sys.exit(0)
+    else:
+        sys.exit(0)
