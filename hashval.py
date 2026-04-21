@@ -27,7 +27,7 @@ def e_string(text, algorithm):
     return h.hexdigest() # la funcion responde con el hash en hexadecimal 
 
 def e_file(filename, algorithm): # lectura en bytes del archivo
-    with open(filename, 'rb') as file:
+    with open(rf"{filename}", 'rb') as file:
         digest = hashlib.file_digest(file, f'{algorithm}')
         return digest.hexdigest() # retorna hash en hexadecimal
 
